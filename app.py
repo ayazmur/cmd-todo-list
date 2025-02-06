@@ -1,8 +1,7 @@
 import os
-import sys
 import argparse
 import json
-from random import sample, randint
+from random import randint
 parser = argparse.ArgumentParser()
 class ConsoleToDo:
     def __init__(self):
@@ -23,9 +22,12 @@ class ConsoleToDo:
         with open(json_name, 'r') as file:
             data = json.load(file)
             return data
-    def save_json(self, json_name, data):
+
+    @staticmethod
+    def save_json(json_name, data):
         with open(json_name, 'w') as file:
             json.dump(data, file)
+
     @staticmethod
     def print_tasks(data):
         """
@@ -49,6 +51,8 @@ class ConsoleToDo:
         idf = randint(0,999999)
         if idf not in self.data.keys():
             return idf
+        else:
+            self.generate_id()
 
     def add_task(self):
         """
@@ -57,23 +61,85 @@ class ConsoleToDo:
         idf = self.generate_id()
         print(f"Enter task:")
         task = input()
-        self.data[idf] = task
+        if not task:
+            print("No task")
+        if task not in self.data.values():
+            self.data[idf] = task
+        else:
+            print(f"Task '{task}' already exists.")
         self.save_json(self.json_name, self.data)
-    def red_task(self):
-        pass
+
+    def edit_task(self):
+        """
+        Edit task in db
+        :return:
+        """
+        idf = input("Enter id of task to edit: ")
+        if idf in self.data.keys():
+            print(f"Edit task: '{idf} {self.data[idf]}' to change")
+            new_task = input(f"Enter new task:")
+            if new_task not in self.data.values():
+                self.data[idf] = new_task
+                self.save_json(self.json_name, self.data)
+            else:
+                print(f"Task '{new_task}' already exists.")
+        else:
+            print(f"Task '{idf}' does not exist.")
+
+    #FIXME
+    @staticmethod
+    def strike(text):
+        """
+        Definition that must strike text
+        :param text: string to strike
+        :return: strike text
+        """
+        result = ""
+        for char in text:
+            result += result + char + '\u0336'
+        return result
+
+    def mark_task(self):
+        """
+        Mark task in db
+        :return:
+        """
+        idf = input("Enter id of task to mark done: ")
+        self.data[idf] = f"{self.data[idf]}(done)"
+        print(f"Task '{self.data[idf]}' has been mark as done.")
+        self.save_json(self.json_name, self.data)
     def delete_task(self):
-        pass
+        idf = input("Enter id of task to delete: ")
+        if idf in self.data.keys():
+            print(f"Deleted task: '{self.data[idf]}'")
+            del self.data[idf]
+            self.save_json(self.json_name, self.data)
+        else:
+            print(f"Task '{self.data[idf]}' does not exist.")
+
     def return_tasks(self):
         self.print_tasks(self.data)
+    def delete_db(self):
+        os.remove(self.json_name)
 
 console_to_do = ConsoleToDo()
-parser.add_argument('-sc', '--start_cli',action='store_true', help="Запустить cli")
-parser.add_argument('-pr','--print_hello', action='store_true', help="Hello world!")
 parser.add_argument('-pt', '--print_tasks', action='store_true', help="Print tasks to cli")
 parser.add_argument('-at', '--add_task', action='store_true', help="Add task")
+parser.add_argument('-et', '--edit_tasks', action='store_true', help="Edit task")
+parser.add_argument('-ddb', '--delete_data_base', action='store_true', help="Delete DB")
+parser.add_argument('-mt', '--mark_task', action='store_true', help="Mark task")
+parser.add_argument('-dt', '--delete_task', action='store_true', help="Delete task")
 args = parser.parse_args()
 if args.print_tasks:
     console_to_do.return_tasks()
 elif args.add_task:
     console_to_do.add_task()
+elif args.edit_tasks:
+    console_to_do.edit_task()
+elif args.delete_data_base:
+    console_to_do.delete_db()
+elif args.mark_task:
+    console_to_do.mark_task()
+elif args.delete_task:
+    console_to_do.delete_task()
 
