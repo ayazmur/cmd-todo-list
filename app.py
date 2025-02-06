@@ -25,6 +25,11 @@ class ConsoleToDo:
 
     @staticmethod
     def save_json(json_name, data):
+        """
+        Save json file
+        :param json_name: full name of json file on project root
+        :param data: data from json file
+        """
         with open(json_name, 'w') as file:
             json.dump(data, file)
 
@@ -72,7 +77,6 @@ class ConsoleToDo:
     def edit_task(self):
         """
         Edit task in db
-        :return:
         """
         idf = input("Enter id of task to edit: ")
         if idf in self.data.keys():
@@ -102,13 +106,15 @@ class ConsoleToDo:
     def mark_task(self):
         """
         Mark task in db
-        :return:
         """
         idf = input("Enter id of task to mark done: ")
         self.data[idf] = f"{self.data[idf]}(done)"
         print(f"Task '{self.data[idf]}' has been mark as done.")
         self.save_json(self.json_name, self.data)
     def delete_task(self):
+        """
+        Delete task in db
+        """
         idf = input("Enter id of task to delete: ")
         if idf in self.data.keys():
             print(f"Deleted task: '{self.data[idf]}'")
@@ -118,28 +124,39 @@ class ConsoleToDo:
             print(f"Task '{self.data[idf]}' does not exist.")
 
     def return_tasks(self):
+        """
+        print tasks to console
+        """
         self.print_tasks(self.data)
     def delete_db(self):
+        """
+        Delete db from root
+        """
         os.remove(self.json_name)
 
 console_to_do = ConsoleToDo()
-parser.add_argument('-pt', '--print_tasks', action='store_true', help="Print tasks to cli")
-parser.add_argument('-at', '--add_task', action='store_true', help="Add task")
-parser.add_argument('-et', '--edit_tasks', action='store_true', help="Edit task")
-parser.add_argument('-ddb', '--delete_data_base', action='store_true', help="Delete DB")
-parser.add_argument('-mt', '--mark_task', action='store_true', help="Mark task")
-parser.add_argument('-dt', '--delete_task', action='store_true', help="Delete task")
-args = parser.parse_args()
-if args.print_tasks:
-    console_to_do.return_tasks()
-elif args.add_task:
-    console_to_do.add_task()
-elif args.edit_tasks:
-    console_to_do.edit_task()
-elif args.delete_data_base:
-    console_to_do.delete_db()
-elif args.mark_task:
-    console_to_do.mark_task()
-elif args.delete_task:
-    console_to_do.delete_task()
+
+def add_arguments():
+    parser.add_argument('-pt', '--print_tasks', action='store_true', help="Print tasks to cli")
+    parser.add_argument('-at', '--add_task', action='store_true', help="Add task")
+    parser.add_argument('-et', '--edit_tasks', action='store_true', help="Edit task")
+    parser.add_argument('-ddb', '--delete_data_base', action='store_true', help="Delete DB")
+    parser.add_argument('-mt', '--mark_task', action='store_true', help="Mark task")
+    parser.add_argument('-dt', '--delete_task', action='store_true', help="Delete task")
+    args = parser.parse_args()
+    if args.print_tasks:
+        console_to_do.return_tasks()
+    elif args.add_task:
+        console_to_do.add_task()
+    elif args.edit_tasks:
+        console_to_do.edit_task()
+    elif args.delete_data_base:
+        console_to_do.delete_db()
+    elif args.mark_task:
+        console_to_do.mark_task()
+    elif args.delete_task:
+        console_to_do.delete_task()
+
+add_arguments()
+
 
