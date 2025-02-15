@@ -2,6 +2,7 @@ import os
 import argparse
 import json
 from random import randint
+from uuid import uuid4
 parser = argparse.ArgumentParser()
 class ConsoleToDo:
     def __init__(self):
@@ -10,21 +11,21 @@ class ConsoleToDo:
         self.tasks = {}
 
     @staticmethod
-    def load_json(json_name):
+    def load_json(json_name: str) -> dict:
         """
         Загружает файл json
         :param json_name: полное имя файла json в корне
         :return: данные из json
         """
         if not os.path.exists(json_name):
-            with open(json_name, 'w') as file:
-                json.dump({}, file)
-        with open(json_name, 'r') as file:
+            with open(json_name, 'w', encoding="utf-8") as file:
+                json.dump({}, file, ensure_ascii=False)
+        with open(json_name, 'r', encoding="utf-8") as file:
             data = json.load(file)
             return data
 
     @staticmethod
-    def save_json(json_name, data):
+    def save_json(json_name: str, data: dict):
         """
         Сохраняет json
         :param json_name: полное имя файла json в корне
@@ -34,7 +35,7 @@ class ConsoleToDo:
             json.dump(data, file)
 
     @staticmethod
-    def print_tasks(data):
+    def print_tasks(data: dict):
         """
         Выводит таски в консоль
         :param data: данные из json
@@ -46,27 +47,24 @@ class ConsoleToDo:
             for idf, task in data.items():
                 print(f"{idf}. {task}")
 
-    def generate_id(self):
+    def generate_id(self) -> str:
         """
-        Генерирует случайное число
+        Генерирует случайный uuid
         :return:
-        int: случайное число (0-999999)
+        str: случайный uuid
         """
-        idf = randint(0,999999)
-        if idf not in self.data.keys():
-            return idf
-        else:
-            self.generate_id()
-
+        idf = str(uuid4())
+        return idf
     def add_task(self):
         """
         Добавление таска
         """
         idf = self.generate_id()
-        print(f"Введите таска:")
+        print(f"Введите таск:")
         task = input()
         if not task:
             print("Пустой ввод")
+            return
         if task not in self.data.values():
             self.data[idf] = task
         else:
