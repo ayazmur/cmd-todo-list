@@ -13,20 +13,19 @@ class Task:
 class ConsoleToDo:
     def __init__(self):
         self.json_name = "db.json"
-        self.data = self.__load_json(self.json_name)
+        self.data = self.__load_json()
         self.tasks = {}
 
-    @staticmethod
-    def __load_json(json_name: str) -> dict:
+    def __load_json(self) -> dict:
         """
         Загружает файл json
         :param json_name: полное имя файла json в корне
         :return: данные из json
         """
-        if not os.path.exists(json_name) or os.path.getsize(json_name) == 0:
-            with open(json_name, "w", encoding="utf-8") as file:
+        if not os.path.exists(self.json_name) or os.path.getsize(self.json_name) == 0:
+            with open(self.json_name, "w", encoding="utf-8") as file:
                 json.dump({}, file, ensure_ascii=False)
-        with open(json_name, "r", encoding="utf-8") as file:
+        with open(self.json_name, "r", encoding="utf-8") as file:
             data = json.load(file)
             return data
 
