@@ -53,8 +53,7 @@ class ConsoleToDo:
     def __generate_id(self) -> str:
         """
         Генерирует случайный uuid
-        :return:
-        str: случайный uuid
+        :return: случайный uuid
         """
         idf = str(uuid4())
         return idf
@@ -81,11 +80,8 @@ class ConsoleToDo:
         if idf in self.data.keys():
             print(f"Редактируемый таск: '{idf} {self.data[idf]}'")
             new_task = input(f"Введите новый таск:")
-            if new_task not in self.data.values():
-                self.data[idf]["name"] = new_task
-                self.save_json(self.json_name, self.data)
-            else:
-                print(f"Таск '{new_task}' уже существует.")
+            self.data[idf]["name"] = new_task
+            self.save_json(self.json_name, self.data)
         else:
             print(f"Таск '{idf}' не существует.")
 
