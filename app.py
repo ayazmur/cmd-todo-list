@@ -2,7 +2,6 @@ import os
 import argparse
 import json
 from uuid import uuid4
-parser = argparse.ArgumentParser()
 class Task:
     def __init__(self, name):
         self.name = name
@@ -115,7 +114,7 @@ class ConsoleToDo:
         os.remove(self.json_name)
 
 console_to_do = ConsoleToDo()
-
+parser = argparse.ArgumentParser()
 def __add_arguments():
     parser.add_argument('-pt', '--print_tasks', action='store_true', help="Print tasks to cli")
     parser.add_argument('-at', '--add_task', action='store_true', help="Add task")
