@@ -12,9 +12,9 @@ class ConsoleToDo:
     @staticmethod
     def load_json(json_name):
         """
-        Load json file
-        :param json_name: full name of json file on project root
-        :return: data from json file
+        Загружает файл json
+        :param json_name: полное имя файла json в корне
+        :return: данные из json
         """
         if not os.path.exists(json_name):
             with open(json_name, 'w') as file:
@@ -26,9 +26,9 @@ class ConsoleToDo:
     @staticmethod
     def save_json(json_name, data):
         """
-        Save json file
-        :param json_name: full name of json file on project root
-        :param data: data from json file
+        Сохраняет json
+        :param json_name: полное имя файла json в корне
+        :param data: данные к сохранию в json
         """
         with open(json_name, 'w') as file:
             json.dump(data, file)
@@ -36,22 +36,21 @@ class ConsoleToDo:
     @staticmethod
     def print_tasks(data):
         """
-        Print tasks to console
-        :param data: dota from json file
-        :return: prints tasks to console
+        Выводит таски в консоль
+        :param data: данные из json
         """
         if not data:
-            print("No data")
+            print("Нет данных")
         else:
-            print("Tasks list:")
+            print("Список тасков:")
             for idf, task in data.items():
                 print(f"{idf}. {task}")
 
     def generate_id(self):
         """
-        Generate random id not existing in db
+        Генерирует случайное число
         :return:
-        int: random id (0-999999)
+        int: случайное число (0-999999)
         """
         idf = randint(0,999999)
         if idf not in self.data.keys():
@@ -61,76 +60,64 @@ class ConsoleToDo:
 
     def add_task(self):
         """
-        Add task to db
+        Добавление таска
         """
         idf = self.generate_id()
-        print(f"Enter task:")
+        print(f"Введите таска:")
         task = input()
         if not task:
-            print("No task")
+            print("Пустой ввод")
         if task not in self.data.values():
             self.data[idf] = task
         else:
-            print(f"Task '{task}' already exists.")
+            print(f"Таск '{task}' уже существует.")
         self.save_json(self.json_name, self.data)
 
     def edit_task(self):
         """
-        Edit task in db
+        Редактирование таска
         """
-        idf = input("Enter id of task to edit: ")
+        idf = input("Введите id таска для редактирования: ")
         if idf in self.data.keys():
-            print(f"Edit task: '{idf} {self.data[idf]}' to change")
-            new_task = input(f"Enter new task:")
+            print(f"Редактируемый таск: '{idf} {self.data[idf]}'")
+            new_task = input(f"Введите новый таск:")
             if new_task not in self.data.values():
                 self.data[idf] = new_task
                 self.save_json(self.json_name, self.data)
             else:
-                print(f"Task '{new_task}' already exists.")
+                print(f"Таск '{new_task}' уже существует.")
         else:
-            print(f"Task '{idf}' does not exist.")
+            print(f"Таск '{idf}' не существует.")
 
-    #FIXME
-    @staticmethod
-    def strike(text):
-        """
-        Definition that must strike text
-        :param text: string to strike
-        :return: strike text
-        """
-        result = ""
-        for char in text:
-            result += result + char + '\u0336'
-        return result
 
     def mark_task(self):
         """
-        Mark task in db
+        Завершение таска
         """
-        idf = input("Enter id of task to mark done: ")
-        self.data[idf] = f"{self.data[idf]}(done)"
-        print(f"Task '{self.data[idf]}' has been mark as done.")
+        idf = input("Введите id таска для завершения: ")
+        self.data[idf] = f"{self.data[idf]}(Готово)"
+        print(f"Таск '{self.data[idf]}' завершен.")
         self.save_json(self.json_name, self.data)
     def delete_task(self):
         """
-        Delete task in db
+        Удаление таска
         """
-        idf = input("Enter id of task to delete: ")
+        idf = input("Введите id таска для удаления: ")
         if idf in self.data.keys():
-            print(f"Deleted task: '{self.data[idf]}'")
+            print(f"Удаленный таск: '{self.data[idf]}'")
             del self.data[idf]
             self.save_json(self.json_name, self.data)
         else:
-            print(f"Task '{self.data[idf]}' does not exist.")
+            print(f"Таск '{self.data[idf]}' не существует.")
 
     def return_tasks(self):
         """
-        print tasks to console
+        Вывод таска в консоль
         """
         self.print_tasks(self.data)
     def delete_db(self):
         """
-        Delete db from root
+        Удаление базы данных
         """
         os.remove(self.json_name)
 
