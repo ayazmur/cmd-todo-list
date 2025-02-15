@@ -50,19 +50,19 @@ class ConsoleToDo:
             for idf, task in self.data.items():
                 print(f"{idf}. {task['name']} {task['active']}")
 
-    def __generate_id(self) -> str:
+    def __generate_id(self) -> uuid4:
         """
         Генерирует случайный uuid
         :return: случайный uuid
         """
-        idf = str(uuid4())
+        idf = uuid4()
         return idf
 
     def add_task(self):
         """
         Добавление таска
         """
-        idf = self.__generate_id()
+        idf = str(self.__generate_id())
         print(f"Введите таск:")
         task = input()
         if not task:
