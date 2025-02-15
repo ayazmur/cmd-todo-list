@@ -3,7 +3,6 @@ import argparse
 import json
 from uuid import uuid4
 parser = argparse.ArgumentParser()
-
 class Task:
     def __init__(self, name):
         self.name = name
@@ -12,11 +11,11 @@ class Task:
 class ConsoleToDo:
     def __init__(self):
         self.json_name = "db.json"
-        self.data = self.load_json(self.json_name)
+        self.data = self.__load_json(self.json_name)
         self.tasks = {}
 
     @staticmethod
-    def load_json(json_name: str) -> dict:
+    def __load_json(json_name: str) -> dict:
         """
         Загружает файл json
         :param json_name: полное имя файла json в корне
@@ -39,20 +38,18 @@ class ConsoleToDo:
         with open(json_name, 'w') as file:
             json.dump(data, file)
 
-    @staticmethod
-    def print_tasks(data: dict):
+    def print_tasks(self):
         """
         Выводит таски в консоль
-        :param data: данные из json
         """
-        if not data:
+        if not self.data:
             print("Нет данных")
         else:
             print("Список тасков:")
-            for idf, task in data.items():
+            for idf, task in self.data.items():
                 print(f"{idf}. {task['name']} {task['active']}")
 
-    def generate_id(self) -> str:
+    def __generate_id(self) -> str:
         """
         Генерирует случайный uuid
         :return:
@@ -64,7 +61,7 @@ class ConsoleToDo:
         """
         Добавление таска
         """
-        idf = self.generate_id()
+        idf = self.__generate_id()
         print(f"Введите таск:")
         task = input()
         if not task:
@@ -111,11 +108,6 @@ class ConsoleToDo:
         else:
             print(f"Таск '{self.data[idf]}' не существует.")
 
-    def return_tasks(self):
-        """
-        Вывод таска в консоль
-        """
-        self.print_tasks(self.data)
     def delete_db(self):
         """
         Удаление базы данных
@@ -124,7 +116,7 @@ class ConsoleToDo:
 
 console_to_do = ConsoleToDo()
 
-def add_arguments():
+def __add_arguments():
     parser.add_argument('-pt', '--print_tasks', action='store_true', help="Print tasks to cli")
     parser.add_argument('-at', '--add_task', action='store_true', help="Add task")
     parser.add_argument('-et', '--edit_tasks', action='store_true', help="Edit task")
@@ -133,7 +125,7 @@ def add_arguments():
     parser.add_argument('-dt', '--delete_task', action='store_true', help="Delete task")
     args = parser.parse_args()
     if args.print_tasks:
-        console_to_do.return_tasks()
+        console_to_do.print_tasks()
     elif args.add_task:
         console_to_do.add_task()
     elif args.edit_tasks:
@@ -144,7 +136,6 @@ def add_arguments():
         console_to_do.mark_task()
     elif args.delete_task:
         console_to_do.delete_task()
-
-add_arguments()
+__add_arguments()
 
 
