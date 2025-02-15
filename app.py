@@ -1,9 +1,14 @@
 import os
 import argparse
 import json
-from random import randint
 from uuid import uuid4
 parser = argparse.ArgumentParser()
+
+class Task:
+    def __init__(self, name):
+        self.name = name
+        self.active = True
+
 class ConsoleToDo:
     def __init__(self):
         self.json_name = "db.json"
@@ -17,7 +22,7 @@ class ConsoleToDo:
         :param json_name: полное имя файла json в корне
         :return: данные из json
         """
-        if not os.path.exists(json_name):
+        if not os.path.exists(json_name) or os.path.getsize(json_name) == 0:
             with open(json_name, 'w', encoding="utf-8") as file:
                 json.dump({}, file, ensure_ascii=False)
         with open(json_name, 'r', encoding="utf-8") as file:
@@ -29,7 +34,7 @@ class ConsoleToDo:
         """
         Сохраняет json
         :param json_name: полное имя файла json в корне
-        :param data: данные к сохранию в json
+        :param data: данные к сохранению в json
         """
         with open(json_name, 'w') as file:
             json.dump(data, file)
@@ -45,7 +50,7 @@ class ConsoleToDo:
         else:
             print("Список тасков:")
             for idf, task in data.items():
-                print(f"{idf}. {task}")
+                print(f"{idf}. {task['name']} {task['active']}")
 
     def generate_id(self) -> str:
         """
@@ -65,10 +70,8 @@ class ConsoleToDo:
         if not task:
             print("Пустой ввод")
             return
-        if task not in self.data.values():
-            self.data[idf] = task
-        else:
-            print(f"Таск '{task}' уже существует.")
+        task = Task(task)
+        self.data[idf] = {'name': task.name, 'active': task.active}
         self.save_json(self.json_name, self.data)
 
     def edit_task(self):
@@ -80,7 +83,7 @@ class ConsoleToDo:
             print(f"Редактируемый таск: '{idf} {self.data[idf]}'")
             new_task = input(f"Введите новый таск:")
             if new_task not in self.data.values():
-                self.data[idf] = new_task
+                self.data[idf]['name'] = new_task
                 self.save_json(self.json_name, self.data)
             else:
                 print(f"Таск '{new_task}' уже существует.")
@@ -93,7 +96,7 @@ class ConsoleToDo:
         Завершение таска
         """
         idf = input("Введите id таска для завершения: ")
-        self.data[idf] = f"{self.data[idf]}(Готово)"
+        self.data[idf]['active'] = False
         print(f"Таск '{self.data[idf]}' завершен.")
         self.save_json(self.json_name, self.data)
     def delete_task(self):
