@@ -2,13 +2,7 @@ import os
 import argparse
 import json
 from uuid import uuid4
-
-
-class Task:
-    def __init__(self, name):
-        self.name = name
-        self.active = True
-
+from task import Task
 
 class ConsoleToDo:
     def __init__(self):
@@ -19,7 +13,6 @@ class ConsoleToDo:
     def __load_json(self) -> dict:
         """
         Загружает файл json
-        :param json_name: полное имя файла json в корне
         :return: данные из json
         """
         if not os.path.exists(self.json_name) or os.path.getsize(self.json_name) == 0:
@@ -49,8 +42,8 @@ class ConsoleToDo:
             print("Список тасков:")
             for idf, task in self.data.items():
                 print(f"{idf}. {task['name']} {task['active']}")
-
-    def __generate_id(self) -> uuid4:
+    @staticmethod
+    def __generate_id() -> uuid4:
         """
         Генерирует случайный uuid
         :return: случайный uuid
