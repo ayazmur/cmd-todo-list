@@ -15,11 +15,17 @@ class ConsoleToDo:
         Загружает файл json
         :return: данные из json
         """
-        if not os.path.exists(self.json_name) or os.path.getsize(self.json_name) == 0:
+        if not os.path.exists(self.json_name):
             with open(self.json_name, "w", encoding="utf-8") as file:
                 json.dump({}, file, ensure_ascii=False)
 
-        with open(self.json_name, "r", encoding="utf-8") as file:
+        with open(self.json_name, "r+", encoding="utf-8") as file:
+            content = file.read()
+            if len(content) == 0:
+                file.seek(0)
+                file.write("{}")
+                file.truncate()
+            file.seek(0)
             data = json.load(file)
             return data
 
