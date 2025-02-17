@@ -21,8 +21,9 @@ class MyParser(argparse.ArgumentParser):
         )
         self.add_argument("-mt", "--mark_task", action="store_true", help="Mark task")
         self.add_argument(
-            "-dt", "--delete_task", action="store_true", help="Delete task"
-        )
+            "-dt", "--delete_task", action="store_true", help="Delete task")
+        self.add_argument("-sc", "--start_console", action="store_true", help="Start console")
+
         args = self.parse_args()
         if args.print_tasks:
             self.console_to_do.print_tasks()
@@ -36,3 +37,5 @@ class MyParser(argparse.ArgumentParser):
             self.console_to_do.mark_task()
         elif args.delete_task:
             self.console_to_do.delete_task()
+        elif args.start_console:
+            self.console_to_do.start_console()
