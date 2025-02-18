@@ -21,15 +21,14 @@ class ConsoleToDo:
 
         with open(self.json_name, "r+", encoding="utf-8") as file:
             content = file.read()
+            file.seek(0)
             if len(content) == 0:
-                file.seek(0)
                 file.write("{}")
                 file.truncate()
-            file.seek(0)
             data = json.load(file)
             return data
 
-    def save_json(self):
+    def _save_json(self):
         """
         Сохраняет json
         """
@@ -67,7 +66,7 @@ class ConsoleToDo:
             return
         task = Task(task)
         self.data[idf] = {"name": task.name, "active": task.active}
-        self.save_json()
+        self._save_json()
 
     def edit_task(self):
         """
@@ -78,7 +77,7 @@ class ConsoleToDo:
             print(f"Редактируемый таск: '{idf} {self.data[idf]}'")
             new_task = input(f"Введите новый таск:")
             self.data[idf]["name"] = new_task
-            self.save_json()
+            self._save_json()
         else:
             print(f"Таск '{idf}' не существует.")
 
@@ -87,9 +86,12 @@ class ConsoleToDo:
         Завершение таска
         """
         idf = input("Введите id таска для завершения: ")
-        self.data[idf]["active"] = False
-        print(f"Таск '{self.data[idf]}' завершен.")
-        self.save_json()
+        if idf in self.data.keys():
+            self.data[idf]["active"] = False
+            print(f"Таск '{self.data[idf]}' завершен.")
+            self._save_json()
+        else:
+            print(f"Таск '{idf}' не существует.")
 
     def delete_task(self):
         """
@@ -99,12 +101,53 @@ class ConsoleToDo:
         if idf in self.data.keys():
             print(f"Удаленный таск: '{self.data[idf]}'")
             del self.data[idf]
-            self.save_json()
+            self._save_json()
         else:
-            print(f"Таск '{self.data[idf]}' не существует.")
+            print(f"Таск '{idf}' не существует.")
 
     def delete_db(self):
         """
         Удаление базы данных
         """
         os.remove(self.json_name)
+
+    def start_console(self):
+        while True:
+            counts_ = 20
+            print("_" * counts_)
+            print("Выберите действие что делать дальше?")
+            print("1. Вывести задачи")
+            print("2. Добавить задачу")
+            print("3. Редактировать задачу")
+            print("4. Завершить задачу")
+            print("5. Удалить задачу")
+            print("6. Удалить базу данных")
+            print("7. Выйти")
+            print("_" * counts_)
+            select = input()
+            match select:
+                case "1":
+                    self.print_tasks()
+                case "2":
+                    self.add_task()
+                    input()
+                case "3":
+                    self.print_tasks()
+                    self.edit_task()
+                    input()
+                case "4":
+                    self.print_tasks()
+                    self.mark_task()
+                    input()
+                case "5":
+                    self.print_tasks()
+                    self.delete_task()
+                    input()
+                case "6":
+                    self.delete_db()
+                    input()
+                case "7":
+                    return
+                case _:
+                    print("Неправильный ввод")
+                    return

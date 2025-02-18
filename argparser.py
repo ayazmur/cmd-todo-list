@@ -8,7 +8,6 @@ class MyParser(argparse.ArgumentParser):
         """
         super().__init__()
         self.console_to_do = console_to_do
-        self.add_arguments()
 
     def add_arguments(self):
         self.add_argument(
@@ -21,8 +20,11 @@ class MyParser(argparse.ArgumentParser):
         )
         self.add_argument("-mt", "--mark_task", action="store_true", help="Mark task")
         self.add_argument(
-            "-dt", "--delete_task", action="store_true", help="Delete task")
-        self.add_argument("-sc", "--start_console", action="store_true", help="Start console")
+            "-dt", "--delete_task", action="store_true", help="Delete task"
+        )
+        self.add_argument(
+            "-sc", "--start_console", action="store_true", help="Start console"
+        )
 
         args = self.parse_args()
         if args.print_tasks:
