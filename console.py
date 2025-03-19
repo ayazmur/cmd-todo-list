@@ -2,9 +2,10 @@ from uuid import UUID
 import os
 from database import SessionLocal
 from models import Task
+
+
 class ConsoleToDo:
     def __init__(self):
-        self.json_name = "db.json"
         self.tasks = {}
 
     def print_tasks(self):
@@ -16,21 +17,21 @@ class ConsoleToDo:
             for task in tasks:
                 print(f"id: {task.id} name: {task.name} active: {task.active}")
 
-
-
-
-    def add_task(self, text):
+    def add_task(self, text:str):
         """
         Добавление таска
+        :param text: текст таска
         """
         with SessionLocal() as session:
-            task = Task(name = text)
+            task = Task(name=text)
             session.add(task)
             session.commit()
 
-    def edit_task(self, id, text):
+    def edit_task(self, id:str, text:str):
         """
         Редактирование таска
+        :param id: id таска
+        :param text: новый текст таска
         """
         with SessionLocal() as session:
             task = session.get(Task, UUID(id))
@@ -38,11 +39,12 @@ class ConsoleToDo:
                 task.name = text
                 session.commit()
             else:
-                print(f"Таск не существует.")
+                print(f"Таск с id {id} не существует.")
 
     def mark_task(self, id):
         """
         Завершение таска
+        :param id: id таска
         """
         with SessionLocal() as session:
             task = session.get(Task, UUID(id))
@@ -55,6 +57,7 @@ class ConsoleToDo:
     def delete_task(self, id):
         """
         Удаление таска
+        :param id: id таска
         """
         with SessionLocal() as session:
             task = session.get(Task, UUID(id))
@@ -63,7 +66,6 @@ class ConsoleToDo:
                 session.commit()
             else:
                 print(f"Таск не существует.")
-
 
     def start_console(self):
         while True:

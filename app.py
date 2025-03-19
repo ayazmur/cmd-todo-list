@@ -1,6 +1,7 @@
 from console import ConsoleToDo
 from argparser import MyParser
 from start_type import StartType
+
 start_type = StartType.WHILE_START
 if __name__ == "__main__":
     console_to_do = ConsoleToDo()
@@ -11,5 +12,3 @@ if __name__ == "__main__":
         my_parser.add_arguments()
     else:
         raise ValueError("Неизвестный тип запуска программы")
-
-
