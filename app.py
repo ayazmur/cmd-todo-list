@@ -1,7 +1,7 @@
 from console import ConsoleToDo
 from argparser import MyParser
 from start_type import StartType
-start_type = StartType.ARGPARSE_START
+start_type = StartType.WHILE_START
 if __name__ == "__main__":
     console_to_do = ConsoleToDo()
     if start_type == StartType.WHILE_START:
