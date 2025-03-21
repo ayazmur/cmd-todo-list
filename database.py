@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from os import getenv
 
 load_dotenv("ci/.env")
-DATABASE_URL = f"postgresql+psycopg2://{getenv("POSTGRES_USER")}:{getenv("POSTGRES_PASSWORD")}@{getenv("POSTGRES_HOST")}:{getenv("POSTGRES_PORT")}/{getenv("POSTGRES_DB")}"
+DATABASE_URL = f"{getenv("SCHEMA")}://{getenv("POSTGRES_USER")}:{getenv("POSTGRES_PASSWORD")}@{getenv("POSTGRES_HOST")}:{getenv("POSTGRES_PORT")}/{getenv("POSTGRES_DB")}"
 
 engine = db.create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
