@@ -1,7 +1,7 @@
 from uuid import UUID
 from database import SessionLocal
 from models import Task
-
+from TaskExceptions import *
 
 class ConsoleToDo:
     def __init__(self):
@@ -25,7 +25,6 @@ class ConsoleToDo:
             task = Task(task_text=text)
             session.add(task)
             session.commit()
-            session.refresh()
 
     def edit_task(self, id: str, text: str) -> None:
         """
@@ -38,9 +37,8 @@ class ConsoleToDo:
             if task:
                 task.task_text = text
                 session.commit()
-                session.refresh()
             else:
-                print(f"Таск с id {id} не существует.")
+                raise TaskExistingException(id=id)
 
     def mark_task(self, id) -> None:
         """
@@ -50,11 +48,14 @@ class ConsoleToDo:
         with SessionLocal() as session:
             task = session.get(Task, UUID(id))
             if task:
-                task.is_active = False
-                session.commit()
-                session.refresh()
+                if task.is_active:
+                    task.is_active = False
+                    session.commit()
+                else:
+                    raise TaskAlreadyIsDone(id)
             else:
-                print(f"Таск не существует.")
+                raise TaskExistingException(id=id)
+
 
     def delete_task(self, id) -> None:
         """
@@ -66,9 +67,9 @@ class ConsoleToDo:
             if task:
                 session.delete(task)
                 session.commit()
-                session.refresh()
             else:
-                print(f"Таск не существует.")
+                raise TaskExistingException(id=id)
+
 
     def start_console(self) -> None:
         while True:
@@ -94,17 +95,26 @@ class ConsoleToDo:
                     self.print_tasks()
                     uuid = input("id: ")
                     name = input("text: ")
-                    self.edit_task(uuid, name)
+                    try:
+                        self.edit_task(uuid, name)
+                    except Exception as e:
+                        print(e)
                     input()
                 case "4":
                     self.print_tasks()
                     uuid = input("id: ")
-                    self.mark_task(uuid)
+                    try:
+                        self.mark_task(uuid)
+                    except Exception as e:
+                        print(e)
                     input()
                 case "5":
                     self.print_tasks()
                     uuid = input("id: ")
-                    self.delete_task(uuid)
+                    try:
+                        self.delete_task(uuid)
+                    except Exception as e:
+                        print(e)
                     input()
                 case "6":
                     return
