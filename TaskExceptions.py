@@ -13,9 +13,10 @@ class TaskExistingException(Exception):
     def __str__(self):
         return self.error_message
 
+
 class TaskAlreadyIsDone(Exception):
     def __init__(self, id):
         self.error_message = f"Таск {id} уже завершен"
+
     def __str__(self):
         return self.error_message
-
