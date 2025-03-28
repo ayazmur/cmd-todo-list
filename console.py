@@ -1,5 +1,4 @@
 from uuid import UUID
-import os
 from database import SessionLocal
 from models import Task
 
@@ -8,26 +7,27 @@ class ConsoleToDo:
     def __init__(self):
         self.tasks = {}
 
-    def print_tasks(self):
+    def print_tasks(self) -> None:
         """
         Выводит таски в консоль
         """
         with SessionLocal() as session:
             tasks = session.query(Task).all()
             for task in tasks:
-                print(f"id: {task.id} name: {task.name} active: {task.active}")
+                print(f"id: {task.id} name: {task.task_text} active: {task.is_active}")
 
-    def add_task(self, text:str):
+    def add_task(self, text: str) -> None:
         """
         Добавление таска
         :param text: текст таска
         """
         with SessionLocal() as session:
-            task = Task(name=text)
+            task = Task(task_text=text)
             session.add(task)
             session.commit()
+            session.refresh()
 
-    def edit_task(self, id:str, text:str):
+    def edit_task(self, id: str, text: str) -> None:
         """
         Редактирование таска
         :param id: id таска
@@ -36,12 +36,13 @@ class ConsoleToDo:
         with SessionLocal() as session:
             task = session.get(Task, UUID(id))
             if task:
-                task.name = text
+                task.task_text = text
                 session.commit()
+                session.refresh()
             else:
                 print(f"Таск с id {id} не существует.")
 
-    def mark_task(self, id):
+    def mark_task(self, id) -> None:
         """
         Завершение таска
         :param id: id таска
@@ -49,12 +50,13 @@ class ConsoleToDo:
         with SessionLocal() as session:
             task = session.get(Task, UUID(id))
             if task:
-                task.active = False
+                task.is_active = False
                 session.commit()
+                session.refresh()
             else:
                 print(f"Таск не существует.")
 
-    def delete_task(self, id):
+    def delete_task(self, id) -> None:
         """
         Удаление таска
         :param id: id таска
@@ -64,10 +66,11 @@ class ConsoleToDo:
             if task:
                 session.delete(task)
                 session.commit()
+                session.refresh()
             else:
                 print(f"Таск не существует.")
 
-    def start_console(self):
+    def start_console(self) -> None:
         while True:
             counts_ = 20
             print("_" * counts_)

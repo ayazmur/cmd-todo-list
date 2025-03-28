@@ -9,7 +9,7 @@ class MyParser(argparse.ArgumentParser):
         super().__init__()
         self.console_to_do = console_to_do
 
-    def add_arguments(self):
+    def add_arguments(self) -> None:
         self.add_argument(
             "-pt", "--print_tasks", action="store_true", help="Print tasks to cli"
         )

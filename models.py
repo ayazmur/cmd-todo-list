@@ -7,5 +7,5 @@ from database import Base
 class Task(Base):
     __tablename__ = "tasks"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    name = Column(String, nullable=False)
-    active = Column(Boolean, default=True)
+    task_text = Column(String, nullable=False)
+    is_active = Column(Boolean, default=True)
