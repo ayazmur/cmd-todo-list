@@ -4,8 +4,6 @@ from uuid import UUID
 from TaskExceptions import *
 
 class DB_Manager:
-    def __init__(self):
-        pass
     def print_tasks(self) -> None:
         """
         Выводит таски в консоль
@@ -24,46 +22,50 @@ class DB_Manager:
             task = Task(task_text=text)
             session.add(task)
             session.commit()
+            session.refresh(task)
 
-    def edit_task(self, id: str, text: str) -> None:
+    def edit_task(self, id: UUID, text: str) -> None:
         """
         Редактирование таска
         :param id: id таска
         :param text: новый текст таска
         """
         with SessionLocal() as session:
-            task = session.get(Task, UUID(id))
+            task = session.get(Task, id)
             if task:
                 task.task_text = text
                 session.commit()
+                session.refresh(task)
             else:
                 raise TaskExistingException(id=id)
 
-    def mark_task(self, id: str) -> None:
+    def mark_done(self, id: UUID) -> None:
         """
         Завершение таска
         :param id: id таска
         """
         with SessionLocal() as session:
-            task = session.get(Task, UUID(id))
+            task = session.get(Task, id)
             if task:
                 if task.is_active:
                     task.is_active = False
                     session.commit()
+                    session.refresh(task)
                 else:
-                    raise TaskAlreadyIsDone(id)
+                    raise TaskCompletedException(id)
             else:
                 raise TaskExistingException(id=id)
 
-    def delete_task(self, id: str) -> None:
+    def delete_task(self, id: UUID) -> None:
         """
         Удаление таска
         :param id: id таска
         """
         with SessionLocal() as session:
-            task = session.get(Task, UUID(id))
+            task = session.get(Task, id)
             if task:
                 session.delete(task)
                 session.commit()
+                session.refresh(task)
             else:
                 raise TaskExistingException(id=id)

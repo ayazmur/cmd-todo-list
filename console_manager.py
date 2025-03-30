@@ -1,5 +1,5 @@
 from db_manager import DB_Manager
-
+from uuid import UUID
 
 class ConsoleToDo:
     def __init__(self):
@@ -27,7 +27,7 @@ class ConsoleToDo:
                     input()
                 case "3":
                     self.db_manager.print_tasks()
-                    uuid = input("id: ")
+                    uuid = UUID(input("id: "))
                     name = input("text: ")
                     try:
                         self.db_manager.edit_task(uuid, name)
@@ -36,15 +36,15 @@ class ConsoleToDo:
                     input()
                 case "4":
                     self.db_manager.print_tasks()
-                    uuid = input("id: ")
+                    uuid = UUID(input("id: "))
                     try:
-                        self.db_manager.mark_task(uuid)
+                        self.db_manager.mark_done(uuid)
                     except Exception as e:
                         print(e)
                     input()
                 case "5":
                     self.db_manager.print_tasks()
-                    uuid = input("id: ")
+                    uuid = UUID(input("id: "))
                     try:
                         self.db_manager.delete_task(uuid)
                     except Exception as e:
