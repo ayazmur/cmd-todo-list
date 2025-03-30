@@ -1,9 +1,10 @@
 from database import SessionLocal
-from models import Task
+from sql_db.models import Task
 from uuid import UUID
-from TaskExceptions import *
+from general.TaskExceptions import *
 
-class DB_Manager:
+
+class SQL_DB_Manager:
     def print_tasks(self) -> None:
         """
         Выводит таски в консоль

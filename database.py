@@ -1,13 +1,31 @@
 import sqlalchemy as db
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import declarative_base
-from dotenv import load_dotenv
-from os import getenv
+from pathlib import Path
+from pydantic import PostgresDsn
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from functools import cached_property
+from dataclasses import dataclass
 
-load_dotenv("ci/.env")
-DATABASE_URL = f"{getenv("SCHEMA")}://{getenv("POSTGRES_USER")}:{getenv("POSTGRES_PASSWORD")}@{getenv("POSTGRES_HOST")}:{getenv("POSTGRES_PORT")}/{getenv("POSTGRES_DB")}"
 
-engine = db.create_engine(DATABASE_URL)
+class DBSettings(BaseSettings):
+    SCHEMA: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_HOST: str
+    POSTGRES_PORT: str
+    POSTGRES_DB: str
+    DB_TYPE: str
+
+    @cached_property
+    def get_database_url(self) -> str:
+        dsn = PostgresDsn(
+            f"{self.SCHEMA}://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+        )
+        return str(dsn)
+
+    model_config = SettingsConfigDict(env_file=Path("ci/.env"))
+
+
+db_settings = DBSettings()
+engine = db.create_engine(db_settings.get_database_url)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base = declarative_base()

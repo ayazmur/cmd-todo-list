@@ -1,9 +1,9 @@
-from db_manager import DB_Manager
 from uuid import UUID
 
+
 class ConsoleToDo:
-    def __init__(self):
-        self.db_manager = DB_Manager()
+    def __init__(self, db):
+        self.db_manager = db
 
     def start_console(self) -> None:
         while True:

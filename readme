@@ -1,0 +1,10 @@
+Инструкция к .env
+Файл .env лежит в папке ci
+Пример заполения:
+POSTGRES_USER=123
+POSTGRES_PASSWORD=123
+POSTGRES_HOST=123
+POSTGRES_PORT=123
+POSTGRES_DB=123
+SCHEMA=123
+DB_TYPE= db_json или db_sql

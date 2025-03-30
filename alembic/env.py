@@ -16,8 +16,7 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-from database import Base
-from models import Task # no qa
+from sql_db.models import Base
 
 target_metadata = Base.metadata
 

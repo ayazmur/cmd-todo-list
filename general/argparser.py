@@ -15,9 +15,6 @@ class MyParser(argparse.ArgumentParser):
         )
         self.add_argument("-at", "--add_task", action="store_true", help="Add task")
         self.add_argument("-et", "--edit_tasks", action="store_true", help="Edit task")
-        self.add_argument(
-            "-ddb", "--delete_data_base", action="store_true", help="Delete DB"
-        )
         self.add_argument("-mt", "--mark_task", action="store_true", help="Mark task")
         self.add_argument(
             "-dt", "--delete_task", action="store_true", help="Delete task"
@@ -33,8 +30,6 @@ class MyParser(argparse.ArgumentParser):
             self.console_to_do.add_task()
         elif args.edit_tasks:
             self.console_to_do.edit_task()
-        elif args.delete_data_base:
-            self.console_to_do.delete_db()
         elif args.mark_task:
             self.console_to_do.mark_task()
         elif args.delete_task:
