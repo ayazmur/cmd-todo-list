@@ -67,6 +67,5 @@ class SQL_DB_Manager:
             if task:
                 session.delete(task)
                 session.commit()
-                session.refresh(task)
             else:
                 raise TaskExistingException(id=id)

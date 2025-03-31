@@ -7,4 +7,5 @@ POSTGRES_HOST=123
 POSTGRES_PORT=123
 POSTGRES_DB=123
 SCHEMA=123
-DB_TYPE= db_json или db_sql
+DB_TYPE=db_json или db_sql
+START_TYPE=while_start или argparse_start

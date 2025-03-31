@@ -4,7 +4,6 @@ from pathlib import Path
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import cached_property
-from dataclasses import dataclass
 
 
 class DBSettings(BaseSettings):
@@ -15,6 +14,7 @@ class DBSettings(BaseSettings):
     POSTGRES_PORT: str
     POSTGRES_DB: str
     DB_TYPE: str
+    START_TYPE: str
 
     @cached_property
     def get_database_url(self) -> str:
