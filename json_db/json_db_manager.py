@@ -7,7 +7,14 @@ from general.TaskExceptions import *
 from uuid import UUID
 
 class JsonDBManager(AbstractDBManager):
+    """
+    Класс менеджера с базой данных на основе JSON
+    """
     def __init__(self) -> None:
+        """
+        Инициализатор менеджера с базой данных JSON
+        :return: None
+        """
         self.json_name = "json_db/db.json"
         self.data = self._load_json()
         self.tasks = {}
@@ -15,7 +22,7 @@ class JsonDBManager(AbstractDBManager):
     def _load_json(self) -> dict:
         """
         Загружает файл json
-        :return: данные из json
+        :return: data: данные из json
         """
         if not os.path.exists(self.json_name):
             with open(self.json_name, "w", encoding="utf-8") as file:
@@ -50,7 +57,7 @@ class JsonDBManager(AbstractDBManager):
             for idf, task in self.data.items():
                 print(f"{idf}  {task['name']} {task['active']}")
 
-    def _generate_id(self) -> uuid4:
+    def _generate_id(self) -> str:
         """
         Генерирует случайный uuid
         :return: случайный uuid
@@ -64,12 +71,12 @@ class JsonDBManager(AbstractDBManager):
         :param text: Текст нового таска
         :return: None
         """
-        idf = str(self._generate_id())
+        idf = self._generate_id()
         task = Task(text)
         self.data[idf] = {"name": task.name, "active": task.active}
         self._save_json()
 
-    def edit_task(self, uid: UUID, text: str) -> None:
+    def edit_task(self, uid: str, text: str) -> None:
         """
         Редактирование таска
         :param uid: uid редактируемого таска

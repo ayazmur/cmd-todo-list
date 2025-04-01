@@ -1,15 +1,24 @@
 import argparse
-
+from AbstractDBManager import AbstractDBManager
 
 class MyParser(argparse.ArgumentParser):
-    def __init__(self, console_to_do):
+    """
+    Класс парсера для работы с базой данных через аргументы консоли
+    """
+    def __init__(self, db_manager:AbstractDBManager) -> None:
         """
-        :param console_to_do: экземпляр класса консольного ввода
+        Инициализатор парсера для ввода в консоль
+        :param db_manager: экземпляр менеджера базы данных
+        :return: None
         """
         super().__init__()
-        self.console_to_do = console_to_do
+        self.db_manager = db_manager
 
     def add_arguments(self) -> None:
+        """
+        Метод добавляющий аргументы в парсер
+        :return: None
+        """
         self.add_argument(
             "-pt", "--print_tasks", action="store_true", help="Print tasks to cli"
         )
@@ -28,16 +37,16 @@ class MyParser(argparse.ArgumentParser):
 
         args = self.parse_args()
         if args.print_tasks:
-            self.console_to_do.print_tasks()
+            self.db_manager.print_tasks()
         elif args.add_task:
             text = args.add_task
-            self.console_to_do.add_task(text[0])
+            self.db_manager.add_task(text[0])
         elif args.edit_task:
             uid, new_text = args.edit_task
-            self.console_to_do.edit_task(uid, new_text)
+            self.db_manager.edit_task(uid, new_text)
         elif args.mark_done:
             uid = args.mark_done
-            self.console_to_do.mark_done(uid[0])
+            self.db_manager.mark_done(uid[0])
         elif args.delete_task:
             uid = args.delete_task
-            self.console_to_do.delete_task(uid[0])
+            self.db_manager.delete_task(uid[0])

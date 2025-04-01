@@ -1,5 +1,14 @@
 class TaskExistingException(Exception):
-    def __init__(self, id=None, task_text=None):
+    """
+    Пользовательское исключение вызываемое при отсутствии таска
+    """
+    def __init__(self, id=None, task_text=None) -> None:
+        """
+        Инициализатор исключения
+        :param id: уникальный идентификатор таска
+        :param task_text: текст таска
+        :return: None
+        """
         self.error_message = ""
         if id is not None:
             self.task_id = id
@@ -11,11 +20,22 @@ class TaskExistingException(Exception):
             self.error_message += f"{self.message_text}: {self.task_text}\n"
 
     def __str__(self):
+        """
+        Строковое представление ошибки
+        :return: str: Текст ошибки
+        """
         return self.error_message
 
 
 class TaskCompletedException(Exception):
-    def __init__(self, id):
+    """
+    Пользовательское исключение вызываемое при попытке завершения завершенного таска
+    """
+    def __init__(self, id) -> None:
+        """
+        Инициализатор исключения
+        :param id:
+        """
         self.error_message = f"Таск {id} уже завершен"
 
     def __str__(self):

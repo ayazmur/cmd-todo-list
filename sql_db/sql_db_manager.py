@@ -4,7 +4,10 @@ from uuid import UUID
 from general.TaskExceptions import *
 
 
-class SQL_DB_Manager:
+class SQLDBManager:
+    """
+    Класс менеджера с базой данных на основе SQL
+    """
     def print_tasks(self) -> None:
         """
         Выводит таски в консоль

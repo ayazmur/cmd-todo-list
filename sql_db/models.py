@@ -7,6 +7,9 @@ Base = declarative_base()
 
 
 class Task(Base):
+    """
+    Класс таска для использования в базе данных sql
+    """
     __tablename__ = "tasks"
     id = Column(
         UUID(as_uuid=True),
