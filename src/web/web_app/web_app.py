@@ -1,31 +1,18 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
 from uuid import UUID
 from typing import List
-from database import SessionLocal
-from sql_db.models import Task
-from AbstractDBManager import AbstractDBManager
-from general.TaskExceptions import TaskExistingException, TaskCompletedException
-
-
+from src.config.database import SessionLocal
+from src.models.sql_models.models import Task
+from src.interfaces.AbstractDBManager import AbstractDBManager
+from src.general.TaskExceptions import TaskExistingException, TaskCompletedException
+from src.web.schemas.task import TaskCreate, TaskResponse
+from pathlib import Path
 app = FastAPI()
 
 db_manager: AbstractDBManager = None
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-
-class TaskCreate(BaseModel):
-    task_text: str
-
-
-class TaskResponse(BaseModel):
-    id: UUID
-    task_text: str
-    is_active: bool
-
-    class Config:
-        from_attributes = True
+static_dir = Path(__file__).parent.parent / "static"
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 
 def setup_db_manager(manager: AbstractDBManager):

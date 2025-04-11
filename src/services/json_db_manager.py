@@ -1,10 +1,10 @@
-from AbstractDBManager import AbstractDBManager
+from src.interfaces.AbstractDBManager import AbstractDBManager
 import os
 import json
 from uuid import uuid4
-from json_db.task import Task
-from general.TaskExceptions import *
-from uuid import UUID
+from src.models.json_models.task import Task
+from src.general.TaskExceptions import *
+
 
 class JsonDBManager(AbstractDBManager):
     """

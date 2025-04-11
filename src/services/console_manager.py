@@ -1,5 +1,5 @@
 from uuid import UUID
-from AbstractDBManager import AbstractDBManager
+from src.interfaces.AbstractDBManager import AbstractDBManager
 
 class ConsoleToDo:
     """

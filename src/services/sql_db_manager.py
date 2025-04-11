@@ -1,7 +1,7 @@
-from database import SessionLocal
-from sql_db.models import Task
+from src.config.database import SessionLocal
+from src.models.sql_models.models import Task
 from uuid import UUID
-from general.TaskExceptions import *
+from src.general.TaskExceptions import *
 
 
 class SQLDBManager:
