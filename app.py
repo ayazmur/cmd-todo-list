@@ -33,6 +33,7 @@ def run_fastapi_start(db: SQLDBManager | JsonDBManager) -> None:
     # Запускаем через строку импорта для поддержки reload
     uvicorn.run(
         "fastapi_db.fastapi_app:app",
+        port=1234,
         reload=True
     )
 
