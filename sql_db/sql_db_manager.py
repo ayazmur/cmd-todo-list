@@ -17,7 +17,7 @@ class SQLDBManager:
             for task in tasks:
                 print(f"id: {task.id} name: {task.task_text} active: {task.is_active}")
 
-    def add_task(self, text: str) -> None:
+    def add_task(self, text: str) -> Task:
         """
         Добавление таска
         :param text: текст таска
@@ -27,6 +27,7 @@ class SQLDBManager:
             session.add(task)
             session.commit()
             session.refresh(task)
+            return task
 
     def edit_task(self, id: UUID, text: str) -> None:
         """

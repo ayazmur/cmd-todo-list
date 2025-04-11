@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do через FastAPI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #task-form {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        #task-input {
+            flex-grow: 1;
+            padding: 8px;
+        }
+        button {
+            padding: 8px 16px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        #add-btn {
+            background: #4CAF50;
+        }
+        #add-btn:hover {
+            background: #45a049;
+        }
+        #tasks-list {
+            list-style: none;
+            padding: 0;
+        }
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            align-items: center;
+        }
+        .task-actions button {
+            padding: 5px 10px;
+        }
+        .edit-btn {
+            background: #FFC107;
+        }
+        .complete-btn {
+            background: #2196F3;
+        }
+        .delete-btn {
+            background: #f44336;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 300px;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+        .modal-actions button {
+            margin-left: 10px;
+        }
+        .task-text.completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <h1>Мой To-Do лист</h1>
+
+    <form id="task-form">
+        <input type="text" id="task-input" placeholder="Новая задача" required>
+        <button type="submit" id="add-btn">Добавить</button>
+    </form>
+
+    <ul id="tasks-list"></ul>
+
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <h3>Редактировать задачу</h3>
+            <input type="text" id="edit-task-input">
+            <div class="modal-actions">
+                <button onclick="closeEditModal()">Отмена</button>
+                <button onclick="saveEditedTask()" style="background: #4CAF50;">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:8000/tasks";
+        let currentlyEditedTaskId = null;
+
+        // Загрузка задач при старте
+        document.addEventListener('DOMContentLoaded', loadTasks);
+
+        // Добавление задачи
+        document.getElementById('task-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('task-input');
+            const text = input.value.trim();
+
+            if (text) {
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ task_text: text }),
+                    });
+                    if (response.ok) {
+                        input.value = '';
+                        loadTasks();
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        });
+
+        // Загрузка задач
+        async function loadTasks() {
+            try {
+                const response = await fetch(API_URL);
+                const tasks = await response.json();
+                renderTasks(tasks);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Отображение задач
+        function renderTasks(tasks) {
+            const list = document.getElementById('tasks-list');
+            list.innerHTML = tasks.map(task => `
+                <li class="task-item" data-id="${task.id}">
+                    <span class="task-text ${task.is_active ? '' : 'completed'}">
+                        ${task.task_text}
+                    </span>
+                    <div class="task-actions">
+                        <button class="edit-btn" onclick="openEditModal('${task.id}', '${task.task_text}')">✎</button>
+                        <button class="complete-btn" onclick="toggleTaskCompletion('${task.id}', ${task.is_active})">
+                            ${task.is_active ? '✓' : '↻'}
+                        </button>
+                        <button class="delete-btn" onclick="deleteTask('${task.id}')">✕</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        // Редактирование задачи
+        function openEditModal(taskId, taskText) {
+            currentlyEditedTaskId = taskId;
+            document.getElementById('edit-task-input').value = taskText;
+            document.getElementById('edit-modal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').style.display = 'none';
+        }
+
+        async function saveEditedTask() {
+            const newText = document.getElementById('edit-task-input').value.trim();
+            if (newText && currentlyEditedTaskId) {
+                try {
+                    const response = await fetch(`${API_URL}/${currentlyEditedTaskId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ task_text: newText }),
+                    });
+                    if (response.ok) {
+                        closeEditModal();
+                        loadTasks();
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        }
+
+        // Переключение статуса задачи
+        async function toggleTaskCompletion(taskId, isActive) {
+            try {
+                const url = isActive
+                    ? `${API_URL}/${taskId}/complete`
+                    : `${API_URL}/${taskId}/reactivate`;
+
+                const response = await fetch(url, {
+                    method: 'PUT',
+                });
+                if (response.ok) {
+                    loadTasks();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Удаление задачи
+        async function deleteTask(taskId) {
+            if (confirm('Удалить задачу?')) {
+                try {
+                    const response = await fetch(`${API_URL}/${taskId}`, {
+                        method: 'DELETE',
+                    });
+                    if (response.ok) {
+                        loadTasks();
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

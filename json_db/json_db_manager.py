@@ -65,7 +65,7 @@ class JsonDBManager(AbstractDBManager):
         idf = str(uuid4())
         return idf
 
-    def add_task(self, text: str) -> None:
+    def add_task(self, text: str) -> Task:
         """
         Создание нового таска
         :param text: Текст нового таска
@@ -75,6 +75,7 @@ class JsonDBManager(AbstractDBManager):
         task = Task(text)
         self.data[idf] = {"name": task.name, "active": task.active}
         self._save_json()
+        return task
 
     def edit_task(self, uid: str, text: str) -> None:
         """
