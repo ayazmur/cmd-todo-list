@@ -1,13 +1,15 @@
-from src.config.database import SessionLocal
-from src.models.sql_models.models import Task
 from uuid import UUID
-from src.general.TaskExceptions import *
+
+from src.config.database import SessionLocal
+from src.general.task_exceptions import *
+from src.models.sql_models.models import Task
 
 
 class SQLDBManager:
     """
     Класс менеджера с базой данных на основе SQL
     """
+
     def print_tasks(self) -> None:
         """
         Выводит таски в консоль

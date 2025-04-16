@@ -1,13 +1,16 @@
+from pathlib import Path
+from typing import List
+from uuid import UUID
+
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
-from uuid import UUID
-from typing import List
+
 from src.config.database import SessionLocal
-from src.models.sql_models.models import Task
+from src.general.task_exceptions import TaskExistingException, TaskCompletedException
 from src.interfaces.AbstractDBManager import AbstractDBManager
-from src.general.TaskExceptions import TaskExistingException, TaskCompletedException
+from src.models.sql_models.models import Task
 from src.web.schemas.task import TaskCreate, TaskResponse
-from pathlib import Path
+
 app = FastAPI()
 
 db_manager: AbstractDBManager = None

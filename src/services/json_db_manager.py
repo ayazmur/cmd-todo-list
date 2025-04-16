@@ -1,15 +1,17 @@
-from src.interfaces.AbstractDBManager import AbstractDBManager
-import os
 import json
+import os
 from uuid import uuid4
+
+from src.general.task_exceptions import *
+from src.interfaces.AbstractDBManager import AbstractDBManager
 from src.models.json_models.task import Task
-from src.general.TaskExceptions import *
 
 
 class JsonDBManager(AbstractDBManager):
     """
     Класс менеджера с базой данных на основе JSON
     """
+
     def __init__(self) -> None:
         """
         Инициализатор менеджера с базой данных JSON
@@ -90,7 +92,7 @@ class JsonDBManager(AbstractDBManager):
             self.data[uid]["name"] = text
             self._save_json()
         else:
-            raise TaskExistingException(id = uid)
+            raise TaskExistingException(id=uid)
 
     def mark_done(self, uid: str) -> None:
         """
@@ -104,7 +106,7 @@ class JsonDBManager(AbstractDBManager):
             print(f"Таск '{self.data[uid]}' завершен.")
             self._save_json()
         else:
-            raise TaskExistingException(id = uid)
+            raise TaskExistingException(id=uid)
 
     def delete_task(self, uid: str) -> None:
         """
@@ -118,4 +120,4 @@ class JsonDBManager(AbstractDBManager):
             del self.data[uid]
             self._save_json()
         else:
-            raise TaskExistingException(id = uid)
+            raise TaskExistingException(id=uid)

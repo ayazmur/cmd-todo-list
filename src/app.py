@@ -1,12 +1,20 @@
+import uvicorn
+
 from general.argparser import MyParser
 from src.config.database import db_settings, DBSettings
-from src.services.sql_db_manager import SQLDBManager
-from src.services.json_db_manager import JsonDBManager
+from src.interfaces.AbstractDBManager import AbstractDBManager
 from src.services.console_manager import ConsoleToDo
-import uvicorn
+from src.services.json_db_manager import JsonDBManager
+from src.services.sql_db_manager import SQLDBManager
+from web.web_app.web_app import setup_db_manager
 
 
 def get_db_manager(db_type: str) -> SQLDBManager | JsonDBManager:
+    """
+    Получение экземпляра менеджера базы данных
+    :param db_type: str
+    :return: SQLDBManager | JsonDBManager
+    """
     match db_type:
         case "db_sql":
             return SQLDBManager()
@@ -16,20 +24,32 @@ def get_db_manager(db_type: str) -> SQLDBManager | JsonDBManager:
             raise ValueError("DB_TYPE должен быть либо db_sql, либо db_json")
 
 
-def run_while_start(db: SQLDBManager | JsonDBManager) -> None:
+def run_while_start(db: AbstractDBManager) -> None:
+    """
+    Запуск через консоль с переданным менеджером БД
+    :param db: экземпляр менеджера базы данных
+    :return: None
+    """
     console_manager = ConsoleToDo(db)
     console_manager.start_console()
 
 
-def run_argparse_start(db: SQLDBManager | JsonDBManager) -> None:
+def run_argparse_start(db: AbstractDBManager) -> None:
+    """
+    Запуск через argparse с переданным менеджером БД
+    :param db: экземпляр менеджера базы данных
+    :return: None
+    """
     my_parser = MyParser(db)
     my_parser.add_arguments()
 
 
-def run_fastapi_start(db: SQLDBManager | JsonDBManager) -> None:
-    """Запуск FastAPI с переданным менеджером БД"""
-    # Устанавливаем менеджер БД для приложения
-    from web.web_app.web_app import setup_db_manager
+def run_fastapi_start(db: AbstractDBManager) -> None:
+    """
+    Запуск fastapi с переданным менеджером БД
+    :param db: экземпляр менеджера базы данных
+    :return: None
+    """
 
     setup_db_manager(db)
 
@@ -38,6 +58,11 @@ def run_fastapi_start(db: SQLDBManager | JsonDBManager) -> None:
 
 
 def main(db_settings: DBSettings) -> None:
+    """
+    Основной запуск программы
+    :param db_settings: экземпляр менеджера базы данных
+    :return: None
+    """
     db = get_db_manager(db_settings.DB_TYPE)
 
     match db_settings.START_TYPE:
