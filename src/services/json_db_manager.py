@@ -1,15 +1,17 @@
-from AbstractDBManager import AbstractDBManager
-import os
 import json
+import os
 from uuid import uuid4
-from json_db.task import Task
-from general.TaskExceptions import *
-from uuid import UUID
+
+from src.general.task_exceptions import *
+from src.interfaces.AbstractDBManager import AbstractDBManager
+from src.models.json_models.task import Task
+
 
 class JsonDBManager(AbstractDBManager):
     """
     Класс менеджера с базой данных на основе JSON
     """
+
     def __init__(self) -> None:
         """
         Инициализатор менеджера с базой данных JSON
@@ -65,7 +67,7 @@ class JsonDBManager(AbstractDBManager):
         idf = str(uuid4())
         return idf
 
-    def add_task(self, text: str) -> None:
+    def add_task(self, text: str) -> Task:
         """
         Создание нового таска
         :param text: Текст нового таска
@@ -75,6 +77,7 @@ class JsonDBManager(AbstractDBManager):
         task = Task(text)
         self.data[idf] = {"name": task.name, "active": task.active}
         self._save_json()
+        return task
 
     def edit_task(self, uid: str, text: str) -> None:
         """
@@ -89,7 +92,7 @@ class JsonDBManager(AbstractDBManager):
             self.data[uid]["name"] = text
             self._save_json()
         else:
-            raise TaskExistingException(id = uid)
+            raise TaskExistingException(id=uid)
 
     def mark_done(self, uid: str) -> None:
         """
@@ -103,7 +106,7 @@ class JsonDBManager(AbstractDBManager):
             print(f"Таск '{self.data[uid]}' завершен.")
             self._save_json()
         else:
-            raise TaskExistingException(id = uid)
+            raise TaskExistingException(id=uid)
 
     def delete_task(self, uid: str) -> None:
         """
@@ -117,4 +120,4 @@ class JsonDBManager(AbstractDBManager):
             del self.data[uid]
             self._save_json()
         else:
-            raise TaskExistingException(id = uid)
+            raise TaskExistingException(id=uid)

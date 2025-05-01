@@ -23,7 +23,7 @@ class DBSettings(BaseSettings):
         )
         return str(dsn)
 
-    model_config = SettingsConfigDict(env_file=Path("ci/.env"))
+    model_config = SettingsConfigDict(env_file=Path("../../ci/.env"))
 
 
 db_settings = DBSettings()

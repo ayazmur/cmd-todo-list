@@ -1,5 +1,5 @@
 import argparse
-from AbstractDBManager import AbstractDBManager
+from src.interfaces.AbstractDBManager import AbstractDBManager
 
 class MyParser(argparse.ArgumentParser):
     """

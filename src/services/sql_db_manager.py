@@ -1,13 +1,15 @@
-from database import SessionLocal
-from sql_db.models import Task
 from uuid import UUID
-from general.TaskExceptions import *
+
+from src.config.database import SessionLocal
+from src.general.task_exceptions import *
+from src.models.sql_models.models import Task
 
 
 class SQLDBManager:
     """
     Класс менеджера с базой данных на основе SQL
     """
+
     def print_tasks(self) -> None:
         """
         Выводит таски в консоль
@@ -17,7 +19,7 @@ class SQLDBManager:
             for task in tasks:
                 print(f"id: {task.id} name: {task.task_text} active: {task.is_active}")
 
-    def add_task(self, text: str) -> None:
+    def add_task(self, text: str) -> Task:
         """
         Добавление таска
         :param text: текст таска
@@ -27,6 +29,7 @@ class SQLDBManager:
             session.add(task)
             session.commit()
             session.refresh(task)
+            return task
 
     def edit_task(self, id: UUID, text: str) -> None:
         """
